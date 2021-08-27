@@ -1,10 +1,9 @@
 ﻿using Authentication.Models;
+using Authentication.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Authentication.Controllers
@@ -12,15 +11,21 @@ namespace Authentication.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly IWeatherForecast _weatherForecast;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration,
+            IWeatherForecast weatherForecast)
         {
             _logger = logger;
+            _configuration = configuration;
+            _weatherForecast = weatherForecast;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var result = await _weatherForecast.Get();
+            return View(result);
         }
 
         public IActionResult Privacy()
